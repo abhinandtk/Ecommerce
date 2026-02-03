@@ -6,11 +6,13 @@ import TrendingNow from "./components/TrendingNow";
 
 export default function Home() {
   return (
-   <div>
-    <OfferSection/>
+   <main className="min-h-screen bg-white">
+    {/* <OfferSection/> */}
     <Header/>
-    <Banner/>
-    <TrendingNow/>
-   </div>
+    <div className="pt-25">
+      <Banner/>
+      <TrendingNow/>
+    </div>
+   </main>
   );
 }
