@@ -77,16 +77,7 @@ export default function Banner() {
               <p className="text-sm md:text-lg mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md font-medium">
                 {slide.description}
               </p>
-              <button className="
-                bg-white text-stone-900
-                hover:bg-stone-100 
-                dark:bg-white dark:text-stone-900
-                dark:hover:bg-stone-200
-                px-10 py-4 
-                text-sm font-bold tracking-widest uppercase 
-                transition-all duration-300
-                shadow-lg
-              ">
+              <button className="bg-white text-stone-900 hover:bg-stone-100 dark:bg-white dark:text-stone-900 dark:hover:bg-stone-200 px-10 py-4  text-sm font-bold tracking-widest uppercase transition-all duration-300shadow-lg">
                 Shop Now
               </button>
             </div>

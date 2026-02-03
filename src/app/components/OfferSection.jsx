@@ -20,12 +20,7 @@ export default function OfferSection() {
   }, [offers.length]);
 
   return (
-    <div className="
-      w-full relative h-10 overflow-hidden
-      bg-slate-200 dark:bg-slate-800
-      text-blue-600 dark:text-blue-400
-      text-sm font-medium tracking-wide
-    ">
+    <div className="w-full relative h-10 overflow-hidden bg-slate-200 dark:bg-slate-800 text-blue-600 dark:text-blue-400 text-sm font-medium tracking-wide">
       {offers.map((offer, i) => {
         const isCurrent = i === index;
         const isPrev = i === (index - 1 + offers.length) % offers.length;
