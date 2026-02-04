@@ -22,6 +22,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
+    signIn("google", { callbackUrl: "/dashboard" })
     console.log("Login with Google");
   };
 
