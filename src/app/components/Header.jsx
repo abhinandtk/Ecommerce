@@ -1,12 +1,18 @@
 import React from "react";
 import Link from "next/link";
+import { auth } from "../../../auth";
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+  
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Pricing", href: "#pricing" },
     { name: "Privacy and terms", href: "#privacy" },
-    { name: "Login", href: "/login" },
+    { 
+      name: session ? "Dashboard" : "Login", 
+      href: session ? "/dashboard" : "/login" 
+    },
   ];
 
   return (
@@ -18,13 +24,7 @@ export default function Header() {
               <Link
                 href={item.href}
                 className="
-                  block px-5 py-2 
-                  text-[13px] font-medium text-gray-700 dark:text-gray-300
-                  hover:text-black dark:hover:text-white
-                  hover:bg-gray-50/50 dark:hover:bg-white/10
-                  rounded-full
-                  transition-all duration-300
-                "
+                  block px-5 py-2  text-[13px] font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-50/50 dark:hover:bg-white/10 rounded-full transition-all duration-300"
               >
                 {item.name}
               </Link>

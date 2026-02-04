@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "../components/Header";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LoginPage() {
+  const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,6 +17,7 @@ export default function LoginPage() {
   };
 
   const handleGithubLogin = () => {
+    signIn("github", { callbackUrl: "/dashboard" })
     console.log("Login with GitHub");
   };
 
@@ -24,7 +27,6 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen bg-white text-black relative pt-25">
-      <Header />
 
       {/* Left Side: Login Form */}
       <div className="flex w-full flex-col justify-center px-8 md:w-1/2 lg:px-24  pb-12">
