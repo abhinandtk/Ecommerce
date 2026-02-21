@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
-  if (!req.auth && pathname.startsWith("/dashboard")) {
+  if (!req.auth && (pathname.startsWith("/dashboard") || pathname.startsWith("/cart"))) {
     const loginUrl = new URL("/login", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
-  }
+}
 
   if (req.auth && pathname.startsWith("/login")) {
     const dashboardUrl = new URL("/dashboard", req.nextUrl.origin);

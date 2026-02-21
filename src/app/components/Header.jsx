@@ -13,6 +13,10 @@ export default async function Header() {
       name: session ? "Dashboard" : "Login", 
       href: session ? "/dashboard" : "/login" 
     },
+    { 
+      name: session ? "Cart" : "Login", 
+      href: session ? "/cart" : "/login" 
+    },
   ];
 
   return (
