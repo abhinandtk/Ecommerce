@@ -1,4 +1,4 @@
-import FetchProducts from "@/lib/api";
+import { FetchProducts } from "@/lib/api";
 import ProductCard from "./ProductCard";
 
 

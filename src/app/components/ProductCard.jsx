@@ -1,9 +1,13 @@
 'use client';
 
+import { AddToCartView, port } from "@/lib/api";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useMemo, useState, useEffect } from "react";
 
 function ProductCard({ product }) {
+    const { data: session, status } = useSession();
+    console.log(session,'checkdatasession')
   const activeVariants = useMemo(
     () => (product?.variants || []).filter(v => v.is_active),
     [product]
@@ -60,6 +64,15 @@ function ProductCard({ product }) {
 
   const selectedSizeName = sizes.find(s => s.id === selectedSizeId)?.name;
 
+  const AddToCart=async(selectedVariant)=>{
+    console.log(selectedVariant,'checkselectedvariant')
+    AddToCartView({
+      product_variant:selectedVariant.id,
+      quantity:1,
+    },session?.backendAccessToken)
+
+  }
+
   return (
     <div className="group relative flex flex-col">
       {/* Image */}
@@ -84,6 +97,7 @@ function ProductCard({ product }) {
           <button
             disabled={!selectedVariant || selectedVariant.stock <= 0}
             className="w-full bg-stone-900 text-white py-3 text-xs font-bold uppercase tracking-widest disabled:opacity-50"
+            onClick={()=>{AddToCart(selectedVariant)}}
           >
             {selectedVariant?.stock > 0 ? (
               <>Add to Bag - {selectedSizeName}</>

@@ -1,49 +1,71 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-const CART_ITEMS = [
-  {
-    id: 1,
-    name: "Classic Cotton Tee",
-    price: 45.0,
-    quantity: 1,
-    size: "M",
-    color: "Stone",
-    image: "/image/banner1.webp",
-  },
-  {
-    id: 2,
-    name: "Relaxed Fit Chinos",
-    price: 89.0,
-    quantity: 1,
-    size: "32",
-    color: "Navy",
-    image: "/image/banner2.webp",
-  },
-];
+import { useSession } from "next-auth/react";
+import { FetchCart, UpdateCartItem, RemoveCartItem } from "@/lib/api";
 
 export default function CartContainer() {
-  const [items, setItems] = useState(CART_ITEMS);
+  const { data: session } = useSession();
+  const [cartData, setCartData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const updateQuantity = (id, delta) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
+  useEffect(() => {
+    if (session?.backendAccessToken) {
+      loadCart();
+    }
+  }, [session]);
+
+  const loadCart = async () => {
+    try {
+      const data = await FetchCart(session.backendAccessToken);
+      setCartData(data);
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateQuantity = async (itemId, currentQty, delta) => {
+    const newQty = currentQty + delta;
+    if (newQty < 1) return;
+    
+    try {
+      const updatedCart = await UpdateCartItem(
+        { item_id: itemId, quantity: newQty },
+        session.backendAccessToken
+      );
+      setCartData(updatedCart);
+    } catch (error) {
+      console.error("Failed to update quantity:", error);
+    }
+  };
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      const updatedCart = await RemoveCartItem(
+        { item_id: itemId },
+        session.backendAccessToken
+      );
+      setCartData(updatedCart);
+    } catch (error) {
+      console.error("Failed to remove item:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 text-center">
+        <p className="text-xl text-stone-400 font-serif">Loading your bag...</p>
+      </div>
     );
-  };
+  }
 
-  const removeItem = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 10.0;
+  const items = cartData?.items || [];
+  const subtotal = parseFloat(cartData?.total_price || 0);
+  const shipping = items.length > 0 ? 10.0 : 0;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -66,8 +88,8 @@ export default function CartContainer() {
                   {/* Item Image */}
                   <div className="relative w-full sm:w-40 aspect-[3/4] bg-stone-50 overflow-hidden rounded-sm border border-stone-100 shrink-0">
                     <Image
-                      src={item.image}
-                      alt={item.name}
+                      src={item.product_image || "/image/banner1.webp"}
+                      alt={item.product_name}
                       fill
                       className="object-cover"
                     />
@@ -78,15 +100,15 @@ export default function CartContainer() {
                     <div className="flex justify-between items-start gap-4">
                       <div>
                         <h3 className="text-lg font-medium text-stone-900 mb-1">
-                          {item.name}
+                          {item.product_name}
                         </h3>
                         <div className="flex gap-4 text-sm text-stone-500">
-                          <p>Color: {item.color}</p>
-                          <p>Size: {item.size}</p>
+                          <p>Color: {item.product_variant.colors.name}</p>
+                          <p>Size: {item.product_variant.sizes.name}</p>
                         </div>
                       </div>
                       <p className="text-lg font-medium">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ${(parseFloat(item.product_variant.price) * item.quantity).toFixed(2)}
                       </p>
                     </div>
 
@@ -94,7 +116,7 @@ export default function CartContainer() {
                       {/* Quantity Selector */}
                       <div className="flex items-center border border-stone-200 rounded-sm overflow-hidden">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity, -1)}
                           className="px-3 py-1 hover:bg-stone-50 transition-colors"
                         >
                           −
@@ -103,7 +125,7 @@ export default function CartContainer() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.id, 1)}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity, 1)}
                           className="px-3 py-1 hover:bg-stone-50 transition-colors"
                         >
                           +
@@ -112,7 +134,7 @@ export default function CartContainer() {
 
                       {/* Remove Button */}
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => handleRemoveItem(item.id)}
                         className="text-xs font-semibold uppercase tracking-widest text-stone-400 hover:text-stone-900 underline underline-offset-4 decoration-stone-200 hover:decoration-stone-900 transition-all"
                       >
                         Remove

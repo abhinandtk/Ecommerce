@@ -1,22 +1,58 @@
 const port = "http://127.0.0.1:8000/";
 
 const FetchProducts = async () => {
-  try {
-    const url = `${port}api/products/`;
-  console.log("Calling:", url);
-
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error("Failed to fetch products");
-    }
-    const response = await res.json();
-    console.log(response,'the response');
-    return response;
-  } catch (error) {
-      console.error("Error fetching products:", error);
-    throw error; 
-  }
+  const res = await fetch(`${port}api/products/`);
+  return res.json();
 };
 
+const FetchCart = async (token) => {
+  const res = await fetch(`${port}api/cart/`, {
+    headers: {
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+  return res.json();
+};
 
-export default FetchProducts
+const AddToCartView = async (data,token) => {
+  const res = await fetch(`${port}api/cart/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+const UpdateCartItem = async (data, token) => {
+  const res = await fetch(`${port}api/cart/update_item/`, {
+    method: "PATCH",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+const RemoveCartItem = async (data, token) => {
+  const res = await fetch(`${port}api/cart/remove_item/`, {
+    method: "DELETE",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+export {
+  FetchProducts,
+  FetchCart,
+  AddToCartView,
+  UpdateCartItem,
+  RemoveCartItem
+};
