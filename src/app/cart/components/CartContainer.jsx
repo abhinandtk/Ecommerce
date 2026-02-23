@@ -20,6 +20,7 @@ export default function CartContainer() {
   const loadCart = async () => {
     try {
       const data = await FetchCart(session.backendAccessToken);
+      console.log("Cart data fetched:", data);
       setCartData(data);
     } catch (error) {
       console.error("Failed to fetch cart:", error);
@@ -37,6 +38,7 @@ export default function CartContainer() {
         { item_id: itemId, quantity: newQty },
         session.backendAccessToken
       );
+      console.log("Cart updated:", updatedCart);
       setCartData(updatedCart);
     } catch (error) {
       console.error("Failed to update quantity:", error);
@@ -49,6 +51,7 @@ export default function CartContainer() {
         { item_id: itemId },
         session.backendAccessToken
       );
+      console.log("Item removed, new cart:", updatedCart);
       setCartData(updatedCart);
     } catch (error) {
       console.error("Failed to remove item:", error);

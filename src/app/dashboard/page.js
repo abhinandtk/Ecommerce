@@ -6,7 +6,7 @@ import SignoutHandle from "./components/SignoutHandle";
 const Dashboard = () => {
   return (
     <main className="min-h-screen bg-white text-gray-900 font-sans selection:bg-gray-100">
-      <Header />
+   
 
       <div className="max-w-7xl mx-auto px-6 pt-32 pb-20">
         {/* Page Title */}

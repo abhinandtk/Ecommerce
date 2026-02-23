@@ -7,8 +7,6 @@ export default async function Header() {
   
   const navItems = [
     { name: "Home", href: "/" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Privacy and terms", href: "#privacy" },
     { 
       name: session ? "Dashboard" : "Login", 
       href: session ? "/dashboard" : "/login" 
@@ -17,7 +15,12 @@ export default async function Header() {
       name: session ? "Cart" : "Login", 
       href: session ? "/cart" : "/login" 
     },
+    { 
+      name: "Shop", 
+      href: "/shop" 
+    },
   ];
+  console.log(session,'checksession')
 
   return (
     <header className="fixed top-6 left-0 w-full z-50 flex justify-center pointer-events-none">
